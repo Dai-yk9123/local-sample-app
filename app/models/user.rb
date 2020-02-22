@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token, :reset_token
   # attr_accessor => :xxというrails内部で使うデータ？オブジェクト属性を作る。
   before_save :downcase_email
@@ -73,6 +74,12 @@ class User < ApplicationRecord
   # パスワード再設定の期限が切れている場合はtrueを返す
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
+  end
+
+  # 試作feedの定義
+  # 完全な実装は14章にて
+  def feed
+    Micropost.where("user_id = ?", id)
   end
 
   private
